@@ -1,0 +1,35 @@
+<section id="gallery" class="max-w-7xl mx-auto">
+  @if (products().length === 0) {
+    <div class="text-center py-20">
+      <p class="text-gray-500 text-lg">No artworks yet. Check back soon!</p>
+    </div>
+  } @else {
+    <div class="masonry-grid">
+      @for (product of products(); track product._id) {
+        <div
+          (click)="productClick.emit(product)"
+          class="masonry-item group cursor-pointer break-inside-avoid mb-6"
+          (contextmenu)="$event.preventDefault()"
+          (dragstart)="$event.preventDefault()">
+
+          <div class="relative overflow-hidden rounded-xl bg-dark-700">
+            <img
+              [src]="product.image"
+              [alt]="product.title"
+              loading="lazy"
+              class="w-full h-auto transition duration-500 group-hover:scale-105"
+              draggable="false" />
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <span class="text-xs font-medium text-accent uppercase tracking-wider">{{ product.category }}</span>
+                <h3 class="text-white font-semibold text-lg mt-1">{{ product.title }}</h3>
+                <p class="text-white text-sm mt-1">₹{{ product.price }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>

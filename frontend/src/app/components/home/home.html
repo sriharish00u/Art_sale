@@ -1,0 +1,22 @@
+<div class="min-h-screen flex">
+  <div class="flex-1">
+    <app-hero
+      [categories]="categories()"
+      [selectedCategory]="selectedCategory()"
+      (categoryChange)="filterByCategory($event)" />
+
+    <main class="px-4 sm:px-6 lg:px-8 pb-16">
+      <app-gallery
+        [products]="products()"
+        (productClick)="openModal($event)" />
+    </main>
+  </div>
+
+  <app-sidebar />
+</div>
+
+@if (isModalOpen() && selectedProduct()) {
+  <app-artwork-modal
+    [product]="selectedProduct()!"
+    (close)="closeModal()" />
+}

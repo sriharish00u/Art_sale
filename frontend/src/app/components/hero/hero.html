@@ -1,0 +1,39 @@
+<section class="relative min-h-[70vh] flex items-center justify-center px-4">
+  <div class="absolute inset-0 bg-gradient-to-b from-dark-800 via-transparent to-dark-900 pointer-events-none"></div>
+
+  <div class="relative z-10 text-center max-w-3xl mx-auto">
+    <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight flex items-center justify-center gap-3">
+      <img src="/siva.jpeg" alt="" class="w-10 h-10 md:w-12 md:h-12 rounded-full" />
+      Art &amp; Design
+    </h1>
+    <p class="text-lg md:text-xl text-gray-400 mb-3">
+      Showcasing digital artworks, posters, illustrations, and creative visual designs.
+    </p>
+    <p class="text-sm text-gray-500 mb-8">
+      Every piece tells a story — find yours.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
+      <button
+        (click)="selectCategory(null)"
+        [class]="selectedCategory() === null
+          ? 'bg-accent text-black px-5 py-2 rounded-full text-sm font-medium transition'
+          : 'bg-dark-600 text-gray-300 px-5 py-2 rounded-full text-sm font-medium hover:bg-dark-500 transition'">
+        All
+      </button>
+      @for (cat of allCategories(); track cat) {
+        <button
+          (click)="selectCategory(cat)"
+          [class]="selectedCategory() === cat
+            ? 'bg-accent text-black px-5 py-2 rounded-full text-sm font-medium transition'
+            : 'bg-dark-600 text-gray-300 px-5 py-2 rounded-full text-sm font-medium hover:bg-dark-500 transition'">
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+
+  </div>
+
+  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-dark-900 to-transparent"></div>
+</section>

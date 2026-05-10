@@ -1,0 +1,140 @@
+<div class="min-h-screen bg-dark-900">
+  <header class="bg-dark-800 border-b border-dark-600 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <h1 class="text-xl font-bold text-white">Admin Dashboard</h1>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-gray-400">{{ admin?.email }}</span>
+        <button (click)="logout()" class="text-sm text-gray-400 hover:text-white transition">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    @if (loading()) {
+      <div class="text-center py-20">
+        <p class="text-gray-500">Loading products...</p>
+      </div>
+    } @else {
+      <div class="flex justify-between items-center mb-6">
+        <p class="text-gray-400">{{ products().length }} product(s)</p>
+        <button (click)="openCreate()" class="bg-accent hover:bg-accent-hover text-black font-medium px-4 py-2 rounded-lg text-sm transition">
+          + Add Product
+        </button>
+      </div>
+
+      @if (showForm()) {
+        <div class="bg-dark-800 rounded-xl p-6 mb-8 border border-dark-600">
+          <h2 class="text-lg font-semibold text-white mb-4">{{ editingId() ? 'Edit Product' : 'New Product' }}</h2>
+
+          <form (ngSubmit)="save()" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-gray-400 mb-1">Title *</label>
+                <input type="text" [(ngModel)]="title" name="title" required
+                  class="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-400 mb-1">Category *</label>
+                <input type="text" [(ngModel)]="category" name="category" required
+                  class="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent" />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-400 mb-1">Price (₹) *</label>
+                <input type="number" [(ngModel)]="price" name="price" required
+                  class="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-400 mb-1">Description *</label>
+              <textarea [(ngModel)]="description" name="description" rows="3" required
+                class="w-full bg-dark-700 border border-dark-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm text-gray-400 mb-1">Image</label>
+              <input type="file" accept="image/*" (change)="onFileSelected($event)"
+                class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-dark-600 file:text-white hover:file:bg-dark-500" />
+              @if (imagePreview) {
+                <img [src]="imagePreview" class="mt-2 h-32 rounded-lg object-cover" />
+              }
+            </div>
+
+            <label class="flex items-center gap-2">
+              <input type="checkbox" [(ngModel)]="featured" name="featured"
+                class="rounded bg-dark-700 border-dark-500 text-accent focus:ring-accent" />
+              <span class="text-sm text-gray-400">Featured</span>
+            </label>
+
+              @if (uploading()) {
+                <div class="space-y-1">
+                  <div class="flex justify-between text-xs text-gray-400">
+                    <span>Uploading image...</span>
+                    <span>{{ uploadProgress() }}%</span>
+                  </div>
+                  <div class="w-full bg-dark-600 rounded-full h-2 overflow-hidden">
+                    <div class="bg-accent h-full rounded-full transition-all duration-300" [style.width.%]="uploadProgress()"></div>
+                  </div>
+                </div>
+              }
+
+              @if (formError) {
+                <p class="text-red-400 text-sm">{{ formError }}</p>
+              }
+
+            <div class="flex gap-3">
+              <button type="submit" [disabled]="formLoading"
+                class="bg-accent hover:bg-accent-hover text-black font-medium px-6 py-2 rounded-lg transition disabled:opacity-50">
+                {{ uploading() ? 'Uploading...' : formLoading ? 'Saving...' : 'Save' }}
+              </button>
+              <button type="button" (click)="cancel()"
+                class="bg-dark-600 hover:bg-dark-500 text-gray-300 px-6 py-2 rounded-lg transition">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-gray-400 border-b border-dark-600">
+              <th class="text-left pb-3 pr-4">Image</th>
+              <th class="text-left pb-3 pr-4">Title</th>
+              <th class="text-left pb-3 pr-4">Category</th>
+              <th class="text-left pb-3 pr-4">Price</th>
+              <th class="text-left pb-3 pr-4">Featured</th>
+              <th class="text-right pb-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product._id) {
+              <tr class="border-b border-dark-700 hover:bg-dark-800/50">
+                <td class="py-3 pr-4">
+                  <img [src]="product.image" class="w-12 h-12 rounded-lg object-cover" />
+                </td>
+                <td class="py-3 pr-4 text-white font-medium">{{ product.title }}</td>
+                <td class="py-3 pr-4 text-gray-400">{{ product.category }}</td>
+                <td class="py-3 pr-4 text-gray-400">₹{{ product.price }}</td>
+                <td class="py-3 pr-4">
+                  @if (product.featured) {
+                    <span class="text-accent text-xs">★ Yes</span>
+                  }
+                </td>
+                <td class="py-3 text-right">
+                  <button (click)="openEdit(product)" class="text-gray-400 hover:text-accent transition mr-3">Edit</button>
+                  <button (click)="deleteProduct(product._id)" class="text-red-400 hover:text-red-300 transition">Delete</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center py-10 text-gray-500">No products yet</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </main>
+</div>
