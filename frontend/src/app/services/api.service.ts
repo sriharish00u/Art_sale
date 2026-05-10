@@ -6,7 +6,7 @@ import { Product, AdminLoginResponse, AdminDashboardData } from '../models/produ
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  private api = 'http://localhost:5000/api';
+  private api = 'https://art-sale.onrender.com/api';
 
   getProducts(category?: string): Observable<Product[]> {
     const params = new HttpParams();
