@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -13,21 +13,15 @@ export class SidebarComponent {
   whatsappNumber = '918870444685';
 
   showForm = signal(false);
-  isOpen = signal(false);
+  isOpen = input(false);
+  closeSidebar = output();
+
   projectTitle = '';
   customerName = '';
   phone = '';
   email = '';
   description = '';
   price = 0;
-
-  toggle() {
-    this.isOpen.update(v => !v);
-  }
-
-  close() {
-    this.isOpen.set(false);
-  }
 
   openRequestForm() {
     this.showForm.set(true);

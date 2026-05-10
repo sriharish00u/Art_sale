@@ -15,11 +15,16 @@ import { ArtworkModalComponent } from '../artwork-modal/artwork-modal';
 export class HomeComponent implements OnInit {
   private api = inject(ApiService);
 
+  sidebarOpen = signal(false);
   products = signal<Product[]>([]);
   categories = signal<string[]>([]);
   selectedCategory = signal<string | null>(null);
   selectedProduct = signal<Product | null>(null);
   isModalOpen = signal(false);
+
+  toggleSidebar() {
+    this.sidebarOpen.update(v => !v);
+  }
 
   ngOnInit() {
     this.loadProducts();
